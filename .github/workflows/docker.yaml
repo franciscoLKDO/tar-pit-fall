@@ -18,7 +18,7 @@ env:
   DOCKER_IMAGE: ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.APP_NAME }}
 
 jobs:
-  ci:
+  Docker-publish:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
