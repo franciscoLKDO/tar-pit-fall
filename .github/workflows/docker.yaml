@@ -13,11 +13,6 @@ on:
             required: false
             default: "tarpit"
             type: string
-        flag:
-            description: "Set the CTF flag in /root/flag.txt (OPTIONAL)"
-            required: false
-            default: ""
-            type: string
 
 env:
   DOCKER_IMAGE: ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.APP_NAME }}
@@ -50,6 +45,6 @@ jobs:
         tags: "${{env.DOCKER_IMAGE}}:latest,${{env.DOCKER_IMAGE}}:${{ env.GIT_COMMIT }}"
         build-args: |
           COMMIT_ID=${{ env.GIT_COMMIT }}
-          FLAG=${{ inputs.flag != '' inputs.flag && secrets.CTF_FLAG }}
+          FLAG=${{ secrets.CTF_FLAG }}
           USER=${{ inputs.user }}
           USER_PASSWORD=${{ inputs.user_password }}
