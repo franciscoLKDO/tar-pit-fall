@@ -1,4 +1,4 @@
-name: docker-CI
+name: docker-publish
 
 on:
   workflow_dispatch:
@@ -14,7 +14,7 @@ on:
             default: "tarpit"
             type: string
         flag:
-            description: "Set the CTF flag in /root/flag.txt"
+            description: "Set the CTF flag in /root/flag.txt (OPTIONAL)"
             required: false
             default: ""
             type: string
