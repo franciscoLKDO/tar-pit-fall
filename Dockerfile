@@ -5,10 +5,6 @@ FROM ${BUILDER_IMAGE} AS builder
 
 ARG GUNTAR_BRANCH=ctf-challenge
 
-ARG FLAG="You found Me!"
-ARG USER=user
-ARG USER_PASSWORD=testuser
-
 RUN apk update && apk add git
 
 RUN git clone https://github.com/franciscoLKDO/guntar.git \
@@ -16,18 +12,14 @@ RUN git clone https://github.com/franciscoLKDO/guntar.git \
     && git checkout ${GUNTAR_BRANCH} \
     && go build -o /guntar
 
+ARG FLAG="You found Me!"
 RUN echo ${FLAG} > /flag.txt
+
+ARG USER=user
+ARG USER_PASSWORD=testuser
 RUN echo -n "${USER}:${USER_PASSWORD}" > /user_pass
 
 FROM ${FROM_IMAGE}
-
-ARG USER=user
-ENV USER=${USER}
-
-ENV WORKDIR=/home/${USER}
-WORKDIR ${WORKDIR}
-
-RUN addgroup ${USER} && adduser -D -G ${USER} ${USER}
 
 COPY --from=builder /guntar /usr/local/bin/guntar
 COPY --from=builder /flag.txt /root/flag.txt
@@ -36,6 +28,13 @@ COPY --from=builder /user_pass /user_pass
 COPY ./start.sh /root
 COPY motd /etc/motd
 
+ARG USER=user
+ENV USER=${USER}
+
+ENV WORKDIR=/home/${USER}
+WORKDIR ${WORKDIR}
+
+RUN addgroup ${USER} && adduser -D -G ${USER} ${USER}
 RUN chmod +s /usr/local/bin/guntar
 
 RUN apk add --no-cache openssh

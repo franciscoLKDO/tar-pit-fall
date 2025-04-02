@@ -16,6 +16,14 @@ An enthusiastic developer has created an interactive CLI tool to help users easi
 - Docker (recommended) or a Linux system
 - Basic knowledge of tarball structures and file permissions
 
+### Quick Run 
+
+```sh 
+docker run --name ctf -d -p 2222:22 franciscolkdo/tar-pit-fall
+ssh Tom@localhost -p 2222
+# password tarpit
+```
+
 ### Installation
 If you want to build the challenge yourself
 1. Clone the repository:
