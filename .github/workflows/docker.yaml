@@ -1,0 +1,55 @@
+name: docker-CI
+
+on:
+  workflow_dispatch:
+    inputs:
+        user:
+            description: "User name to connect through ssh"
+            required: false
+            default: "Tom"
+            type: string
+        user_password:
+            description: "User password to connect through ssh"
+            required: false
+            default: "tarpit"
+            type: string
+        flag:
+            description: "Set the CTF flag in /root/flag.txt"
+            required: false
+            default: ""
+            type: string
+
+env:
+  DOCKER_IMAGE: ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.APP_NAME }}
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+  
+    - name: Set variables
+      shell: bash
+      run:  |
+        GIT_COMMIT=$(echo ${{ github.sha }} | cut -c 1-6)
+        echo "GIT_COMMIT=${GIT_COMMIT}" >> $GITHUB_ENV
+
+    - name: Login to DockerHub
+      if: ${{ github.event_name == 'push' && github.ref_name == 'master' }}
+      uses: docker/login-action@v1
+      with:
+        username: ${{ vars.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Post image to DockerHub
+      if: ${{ github.event_name == 'push' && github.ref_name == 'master' }}
+      uses: docker/build-push-action@v6
+      with:
+        push: true
+        tags: "${{env.DOCKER_IMAGE}}:${{ env.GIT_COMMIT }}"
+        build-args: |
+          COMMIT_ID=${{ env.GIT_COMMIT }}
+          FLAG=${{ inputs.flag != "" inputs.flag && secrets.CTF_FLAG }}
+          USER=${{ inputs.user }}
+          USER_PASSWORD=${{ inputs.user_password }}
