@@ -47,9 +47,9 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         push: true
-        tags: "${{env.DOCKER_IMAGE}}:${{ env.GIT_COMMIT }}"
+        tags: "${{env.DOCKER_IMAGE}}:latest,${{env.DOCKER_IMAGE}}:${{ env.GIT_COMMIT }}"
         build-args: |
           COMMIT_ID=${{ env.GIT_COMMIT }}
-          FLAG=${{ inputs.flag != "" inputs.flag && secrets.CTF_FLAG }}
+          FLAG=${{ inputs.flag != '' inputs.flag && secrets.CTF_FLAG }}
           USER=${{ inputs.user }}
           USER_PASSWORD=${{ inputs.user_password }}
